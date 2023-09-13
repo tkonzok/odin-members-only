@@ -41,10 +41,13 @@ passport.deserializeUser(async function(id, done) {
     };
   });
 
+// render home page
 export const index = (req, res) => res.render("index", { user: req.user });
 
-export const user_create_get = (req, res) => res.render("sign-up-form");
+// render sign up page GET
+export const user_create_get = (req, res) => res.render("sign-up-form", {title: "Create a new User"});
 
+// render sign up page POST
 export const user_create_post = [
   // Validate and sanitize fields.
   body("name", "Name must not be empty.")
@@ -62,10 +65,8 @@ export const user_create_post = [
 
   // Process request after validation and sanitization.
   asyncHandler(async (req, res, next) => {
-    console.log(req.body)
   // Extract the validation errors from a request.
     const errors = validationResult(req);
-    console.log(errors);
 
     try {
         bcrypt.hash(req.body.password, 10, async (err, hashedPassword) => {
@@ -77,6 +78,7 @@ export const user_create_post = [
             if (!errors.isEmpty()) {
               // There are errors. Render form again with sanitized values/error messages.
               res.render("sign-up-form", {
+                title: "Create a new User",
                 user: user,
                 errors: errors.array()
               });
@@ -92,84 +94,21 @@ export const user_create_post = [
 }),
 ];
 
-/*
+// render log in page GET
+export const user_login_get = (req, res) => res.render("log-in-form", {title: "Log In"});
 
-// Display item create form on GET.
-exports.item_create_get = asyncHandler(async (req, res, next) => {
-    // Get all categories, which we can use for adding to our item.
-    const allCategories = await Category.find().exec();
-  
-    res.render("item_form", {
-      title: "Create Item",
-      categories: allCategories,
+// render log in page POST
+export const user_login_post = passport.authenticate("local", {
+      successRedirect: "/",
+      failureRedirect: "/"
     });
-  });
-  
-  // Handle item create on POST.
-  exports.item_create_post = [
-    // Convert the category to an array.
-    (req, res, next) => {
-      if (!(req.body.category instanceof Array)) {
-        if (typeof req.body.category === "undefined") req.body.category = [];
-        else req.body.category = new Array(req.body.category);
-      }
-      next();
-    },
-  
-    // Validate and sanitize fields.
-    body("title", "Title must not be empty.")
-      .trim()
-      .isLength({ min: 1 })
-      .escape(),
-    body("description", "Description must not be empty.")
-      .trim()
-      .isLength({ min: 1 })
-      .escape(),
-    body("category.*").escape(),
-    body("price", "Price must not be empty.")
-      .trim()
-      .isLength({ min: 1 })
-      .escape(),
-    body("numberInStock", "Stock must not be empty").trim().isInt().escape(),
-    // Process request after validation and sanitization.
-  
-    asyncHandler(async (req, res, next) => {
-      // Extract the validation errors from a request.
-      const errors = validationResult(req);
-  
-      // Create a Item object with escaped and trimmed data.
-      const item = new Item({
-        title: req.body.title,
-        description: req.body.description,
-        category: req.body.category,
-        price: req.body.price,
-        numberInStock: req.body.numberInStock,
-      });
-  
-      if (!errors.isEmpty()) {
-        // There are errors. Render form again with sanitized values/error messages.
-  
-        // Get all items and categories for form.
-        const allCategories = await Category.find().exec();
-  
-        // Mark our selected categories as checked.
-        for (const category of allCategories) {
-          if (item.category.includes(category._id)) {
-            category.checked = "true";
-          }
-        }
-        res.render("item_form", {
-          title: "Create Item",
-          categories: allCategories,
-          item: item,
-          errors: errors.array(),
-        });
-      } else {
-        // Data from form is valid. Save item.
-        await item.save();
-        res.redirect(item.url);
-      }
-    }),
-  ];
 
-  */
+// log out GET
+export const user_logout_get = (req, res, next) => {
+  req.logout(function (err) {
+    if (err) {
+      return next(err);
+    }
+    res.redirect("/");
+  });
+};
