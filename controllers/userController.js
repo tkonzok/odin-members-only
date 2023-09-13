@@ -100,10 +100,10 @@ export const user_login_get = (req, res) => res.render("log-in-form", {title: "L
 // render log in page POST
 export const user_login_post = passport.authenticate("local", {
       successRedirect: "/",
-      failureRedirect: "/"
+      failureRedirect: "/users/log-in"
     });
 
-// log out GET
+// render log out GET
 export const user_logout_get = (req, res, next) => {
   req.logout(function (err) {
     if (err) {
@@ -112,3 +112,38 @@ export const user_logout_get = (req, res, next) => {
     res.redirect("/");
   });
 };
+
+// render become admin page GET
+export const user_become_admin_get = (req, res) => res.render("become-admin-form");
+
+// render become admin page POST
+export const  user_become_admin_post = [
+  // Validate and sanitize fields.
+  body("secret", "Secret must not be empty.")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+
+  // Process request after validation and sanitization.
+  asyncHandler(async (req, res, next) => {
+  // Extract the validation errors from a request.
+    const errors = validationResult(req);
+    const SECRET = process.env.ADMIN_SECRET;
+
+    try {
+        if (SECRET === req.body.secret) {
+          console.log(req.user._id);
+          const updatedUser = await User.findOneAndUpdate(
+            { _id: req.user._id },
+            { isAdmin: true },
+            { returnOriginal: false }
+          )
+          res.redirect("/");
+        } else {
+          res.render("become-admin-form", {tryAgain: true})
+        };
+    } catch(err) {
+      return next(err);
+    };
+}),
+];

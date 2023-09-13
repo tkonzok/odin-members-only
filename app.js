@@ -40,19 +40,22 @@ app.use(session({ secret: "secret", resave: false, saveUninitialized: true }));
 app.use(passport.initialize());
 app.use(passport.session());
 
+app.use(function(req, res, next) {
+  res.locals.currentUser = req.user;
+  next();
+});
+
 app.use('/', indexRouter);
 app.use('/users', userRouter);
 app.use('/messages', messageRouter);
+
 
 /*
 
 
 app.use(express.urlencoded({ extended: false }));
 
-app.use(function(req, res, next) {
-    res.locals.currentUser = req.user;
-    next();
-  });
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

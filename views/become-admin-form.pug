@@ -1,0 +1,24 @@
+extends layout
+
+block content
+  h1 Become Admin
+
+  if !currentUser.isAdmin
+    form(method='POST' action='')
+        div.form-group
+        if tryAgain 
+          label(for='secret') Wrong code, try again:
+        else 
+          label(for='secret') Enter secret code:
+        input#secret.form-control(type='text', placeholder='Secret Code' name='secret' required='true')
+        button.btn.btn-primary(type='submit') Become Admin
+
+    if errors
+        ul
+        for error in errors
+            li!= error.msg
+
+  else
+    p You already got admin status.
+
+  a(href="/") Back

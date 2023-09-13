@@ -1,0 +1,27 @@
+extends layout
+
+block content
+  h1= title
+
+  div(class='message-board')
+    each message in message_list
+      div(class='message')
+        h2 #{message.title}
+        p #{message.text}
+        if currentUser
+          p by #{message.author[0].name}
+          p #{message.timestamp_formatted}
+          if currentUser.isAdmin
+            a(href=message.url+"/delete-message") Delete Message
+        else
+          p Log in to view author and date
+
+    else
+      p There are no messages.
+
+    if currentUser 
+      a(href="messages/add-message") Add Message
+    else
+      p You need to log in to add own messages
+
+    a(href="/") Back

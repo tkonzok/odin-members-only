@@ -8,3 +8,14 @@ form {
   flex-direction: column;
   gap: 16px;
 }
+
+.message-board {
+  display: flex;
+  flex-direction: column;
+}
+
+.message {
+  border-top: 1px solid;
+  border-bottom: 1px solid;
+  padding: 16px;
+}
