@@ -45,7 +45,7 @@ export const index = (req, res) => res.render("index", { user: req.user });
 
 export const user_create_get = (req, res) => res.render("sign-up-form");
 
-export const user_create_post = asyncHandler(async (req, res, next) => {
+export const user_create_post = [
   // Validate and sanitize fields.
   body("name", "Name must not be empty.")
     .trim()
@@ -55,39 +55,42 @@ export const user_create_post = asyncHandler(async (req, res, next) => {
     .trim()
     .isLength({ min: 1 })
     .escape(),
-  body("password", "Password must not be empty.")
+  body("password", "Password must be of at least 8 characters.")
     .trim()
-    .isLength({ min: 1 })
-    .escape()
+    .isLength({ min: 8 })
+    .escape(),
 
   // Process request after validation and sanitization.
-
+  asyncHandler(async (req, res, next) => {
+    console.log(req.body)
   // Extract the validation errors from a request.
-  const errors = validationResult(req);
+    const errors = validationResult(req);
+    console.log(errors);
 
-  try {
-      bcrypt.hash(req.body.password, 10, async (err, hashedPassword) => {
-          const user = new User({
-              name: req.body.name,
-              username: req.body.username,
-              password: hashedPassword
-          });
-          if (!errors.isEmpty()) {
-            // There are errors. Render form again with sanitized values/error messages.
-            res.render("sign-up-form", {
-              user: user,
-              errors: errors.array()
+    try {
+        bcrypt.hash(req.body.password, 10, async (err, hashedPassword) => {
+            const user = new User({
+                name: req.body.name,
+                username: req.body.username,
+                password: hashedPassword
             });
-          } else {
-            // Data from form is valid. Save item.
-            const result = await user.save();
-            res.redirect("/");
-          }  
-        });
-  } catch(err) {
-    return next(err);
-  };
-})
+            if (!errors.isEmpty()) {
+              // There are errors. Render form again with sanitized values/error messages.
+              res.render("sign-up-form", {
+                user: user,
+                errors: errors.array()
+              });
+            } else {
+              // Data from form is valid. Save item.
+              const result = await user.save();
+              res.redirect("/");
+            }  
+          });
+    } catch(err) {
+      return next(err);
+    };
+}),
+];
 
 /*
 
