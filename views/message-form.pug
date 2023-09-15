@@ -1,20 +1,21 @@
 extends layout
 
 block content
-  h1= title
-
   form(method='POST' action='')
-    div.form-group
-      label(for='title') Title:
-      input#title.form-control(type='text', placeholder='Title' name='title' required='true' value=(undefined===message ? '' : message.title))
-    div.form-group
-      label(for='text') Text:
-      input#text.form-control(type='text', placeholder='Text' name='text' required='true' value=(undefined===message ? '' : message.text))
-    button.btn.btn-primary(type='submit') Add Message
+    h1.h3.mb-3.fw-normal #{title}
+    .form-floating
+      label(for='title') Title
+      input#title.form-control(type='text', name='title' required='true' value=(undefined===message ? '' : message.title))
+    .form-floating
+      label(for='text') Text
+      input#text.form-control(type='text', name='text' required='true' value=(undefined===message ? '' : message.text))
+    button.btn.btn-primary.w-100.py-2(type='submit') Add Message
+    button.btn.btn-secondary.w-100.py-2(type='button') 
+      a(href="../") Return
 
   if errors
     ul
       for error in errors
         li!= error.msg
 
-  a(href="/") Back
+  

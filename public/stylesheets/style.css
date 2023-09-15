@@ -1,6 +1,15 @@
+body {
+  display: flex;
+  min-height: 100vh;
+}
+
 .container {
   display: flex;
   flex-direction: column;
+}
+
+.container > * {
+  margin: 2rem auto 0 2rem;
 }
 
 form {
@@ -18,4 +27,11 @@ form {
   border-top: 1px solid;
   border-bottom: 1px solid;
   padding: 16px;
+}
+
+a,
+a:visited,
+a:active {
+  text-decoration: none;
+  color: inherit;
 }

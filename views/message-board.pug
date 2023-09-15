@@ -3,25 +3,37 @@ extends layout
 block content
   h1= title
 
-  div(class='message-board')
+  .row.mb-2
     each message in message_list
-      div(class='message')
-        h2 #{message.title}
-        p #{message.text}
-        if currentUser
-          p by #{message.author[0].name}
-          p #{message.timestamp_formatted}
-          if currentUser.isAdmin
-            a(href=message.url+"/delete-message") Delete Message
-        else
-          p Log in to view author and date
-
+      .col-md-6
+        .row.g-0.border.rounded.overflow-hidden.flex-md-row.h-100.mb-4.shadow-sm.h-md-250.position-relative
+          .col.p-4.d-flex.flex-column.position-static
+            strong.d-inline-block.mb-2.text-primary-emphasis Post
+            h3.mb-0 #{message.title}
+            if currentUser
+              .mb-1.text-body-secondary #{message.timestamp_formatted} 
+              .mb-1.text-body-secondary by #{message.author[0].name}
+            p.card-text.mb-auto
+              | #{message.text}
+            if currentUser
+              if currentUser.isAdmin
+                a.icon-link.gap-1.icon-link-hover.stretched-link.mt-4(href=message.url+'/delete-message')(style='color: #0d6efd')
+                  | Delete Message
     else
-      p There are no messages.
-
-    if currentUser 
-      a(href="messages/add-message") Add Message
-    else
-      p You need to log in to add own messages
-
-    a(href="/") Back
+      .col-md-6
+        .row.g-0.border.rounded.overflow-hidden.flex-md-row.mb-4.shadow-sm.h-md-250.position-relative
+          .col.p-4.d-flex.flex-column.position-static
+            p.card-text.mb-auto
+              | There are no messages.
+    
+  if currentUser
+    button.btn.btn-primary.py-2.m-1(style='width: 150px')
+      a(href='messages/add-message')
+        | Add Message
+  else
+    p 
+      | You need to 
+      a(href="users/log-in")(style='color: #0d6efd') sign in
+      |  to add own messages.
+  button.btn.btn-secondary.py-2.m-1(style='width: 150px')
+    a(href="/") Return

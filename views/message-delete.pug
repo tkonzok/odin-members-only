@@ -9,4 +9,6 @@ block content
     div.form-group
       input#messageid.form-control(type='hidden',name='messageid', required='true', value=message._id )
 
-    button.btn.btn-primary(type='submit') Delete
+    button.btn.btn-primary.py-2.m-1(type='submit') Delete
+    button.btn.btn-secondary.py-2.m-1(style='width: 150px')
+      a(href="/messages") Return

@@ -12,6 +12,8 @@ block content
           label(for='secret') Enter secret code:
         input#secret.form-control(type='text', placeholder='Secret Code' name='secret' required='true')
         button.btn.btn-primary(type='submit') Become Admin
+        button.btn.btn-secondary.py-2(type='button') 
+          a(href="../") Return
 
     if errors
         ul
@@ -21,4 +23,5 @@ block content
   else
     p You already got admin status.
 
-  a(href="/") Back
+    button.btn.btn-secondary.py-2(type='button') 
+        a(href="../") Return
