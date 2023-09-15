@@ -1,7 +1,7 @@
 import createError from 'http-errors';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
-import indexRouter from "./routes/indexRouter.js";
+import indexRouter from "./routes/index.js";
 import userRouter from "./routes/userRouter.js";
 import messageRouter from "./routes/messageRouter.js"; 
 import compression from "compression";
@@ -32,10 +32,11 @@ async function main() {
 
 const app = express();
 const limiter = RateLimit({
-  windowMs: 1 * 50 * 1000,
-  max: 20,
+  windowMs: 1 * 60 * 1000,
+  max: 100,
 });
 
+app.set('port', 8080);
 app.set("views", path.join(__dirname, 'views'));
 app.set("view engine", "pug");
 
@@ -67,73 +68,4 @@ app.use('/', indexRouter);
 app.use('/users', userRouter);
 app.use('/messages', messageRouter);
 
-
-/*
-
-
-app.use(express.urlencoded({ extended: false }));
-
-
-
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  next(createError(404));
-});
-
-// error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
-});
-
-app.get("/", (req, res) => {
-    res.render("index", { user: req.user });
-  });
-app.get("/sign-up", (req, res) => res.render("sign-up-form"));
-
-
-app.post("/sign-up", async (req, res, next) => {
-    try {
-        bcrypt.hash(req.body.password, 10, async (err, hashedPassword) => {
-            const user = new User({
-                first_name: req.body.first_name,
-                last_name: req.body.last_name,
-                username: req.body.username,
-                password: hashedPassword,
-                membership_status: req.body.membership_status
-            });
-            const result = await user.save();
-          });
-      
-      
-      res.redirect("/");
-    } catch(err) {
-      return next(err);
-    };
-  });
-
-app.post(
-    "/log-in",
-    passport.authenticate("local", {
-      successRedirect: "/",
-      failureRedirect: "/"
-    })
-  );
-
-app.get("/log-out", (req, res, next) => {
-    req.logout(function (err) {
-      if (err) {
-        return next(err);
-      }
-      res.redirect("/");
-    });
-  });
-
-  */
-
-app.listen(3000, () => console.log("app listening on port 3000!"));
+app.listen(8080, () => console.log("app listening on port 8080!"));

@@ -53,7 +53,7 @@ export const message_create_post = [
     } else {
       // Data from form is valid. Save message.
       await message.save();
-      res.redirect("/");
+      res.redirect("/messages");
     }
 }),
 ];
